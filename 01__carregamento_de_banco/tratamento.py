@@ -1,26 +1,29 @@
 import pandas as pd
 
+data_path_1 = ('01__carregamento_de_banco\dados_brutos\%s')
+data_path_2 = ('01__carregamento_de_banco\dados_tratados\%s')
+
 # Lendo os dados
 database_criptomoedas = pd.read_excel(
-    'Investimentos - Base de Dados.xlsx', sheet_name='Criptomoedas')
+    data_path_1 % 'Investimentos - Base de Dados.xlsx', sheet_name='Criptomoedas')
 
 database_acoes = pd.read_excel(
-    'Investimentos - Base de Dados.xlsx', sheet_name='Ações')
+    data_path_1 % 'Investimentos - Base de Dados.xlsx', sheet_name='Ações')
 
 database_fi = pd.read_excel(
-    'Investimentos - Base de Dados.xlsx', sheet_name='Fundos Imobiliários')
+    data_path_1 % 'Investimentos - Base de Dados.xlsx', sheet_name='Fundos Imobiliários')
 
 database_div_acoes = pd.read_excel(
-    'Investimentos - Base de Dados.xlsx', sheet_name='Ações_Dividendos-Juros')
+    data_path_1 % 'Investimentos - Base de Dados.xlsx', sheet_name='Ações_Dividendos-Juros')
 
 database_div_fi = pd.read_excel(
-    'Investimentos - Base de Dados.xlsx', sheet_name='Fundos Imobiliários_Dividendos')
+    data_path_1 % 'Investimentos - Base de Dados.xlsx', sheet_name='Fundos Imobiliários_Dividendos')
 
 database_caixinhas = pd.read_excel(
-    'Investimentos - Base de Dados.xlsx', sheet_name='Caixinhas Nubank')
+    data_path_1 % 'Investimentos - Base de Dados.xlsx', sheet_name='Caixinhas Nubank')
 
 database_de_para = pd.read_excel(
-    'Investimentos - Base de Dados.xlsx', sheet_name='De-Para')
+    data_path_1 % 'Investimentos - Base de Dados.xlsx', sheet_name='De-Para')
 
 # Tratando Criptomoedas
 database_criptomoedas = pd.melt(database_criptomoedas, id_vars='Data')
@@ -47,7 +50,7 @@ database_caixinhas = pd.melt(database_caixinhas, id_vars='Data')
 database_caixinhas.rename({'variable': 'Caixinhas'}, axis=1, inplace=True)
 
 # Salvando dados
-writer = pd.ExcelWriter('Investimentos Database - PowerBI.xlsx', engine='xlsxwriter')
+writer = pd.ExcelWriter(data_path_2 % 'Investimentos Database - PowerBI.xlsx', engine='xlsxwriter')
 
 # salvar cada DataFrame em uma aba separada
 database_criptomoedas.to_excel(writer, sheet_name='Criptomoedas', index=False)
