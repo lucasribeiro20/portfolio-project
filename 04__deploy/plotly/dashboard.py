@@ -5,14 +5,11 @@ from dash import html
 import plotly.graph_objects as go
 from dash.dependencies import Input, Output
 
-# Exemplo de dados no DataFrame
-data = {
-    'mes': ['Jan', 'Fev', 'Mar', 'Abr', 'Mai'],
-    'criptomoeda': ['Bitcoin', 'Bitcoin', 'Ethereum', 'Ethereum', 'Ripple'],
-    'valor': [5000, 6000, 5500, 5800, 6200]
-}
+data_path = ('01__carregamento_de_banco\dados_tratados\%s')
 
-df = pd.DataFrame(data)
+# Lendo os dados
+database_criptomoedas = pd.read_excel(
+    data_path % 'Investimentos Database - PowerBI.xlsx', sheet_name='Criptomoedas')
 
 # Criar o aplicativo Dash
 app = dash.Dash(__name__)
@@ -24,8 +21,9 @@ app.layout = html.Div([
     # Dropdown para selecionar a criptomoeda
     dcc.Dropdown(
         id='dropdown-criptomoeda',
-        options=[{'label': cripto, 'value': cripto} for cripto in df['criptomoeda'].unique()],
-        value=df['criptomoeda'].unique()[0]
+        options=[{'label': cripto, 'value': cripto} for cripto in database_criptomoedas[
+            'Criptomoedas'].unique()],
+        value=database_criptomoedas['Criptomoedas'].unique()[0]
     ),
     
     # Gráfico de barras agrupadas
@@ -38,13 +36,14 @@ app.layout = html.Div([
     [Input('dropdown-criptomoeda', 'value')]
 )
 def atualizar_grafico(criptomoeda_selecionada):
-    df_filtrado = df[df['criptomoeda'] == criptomoeda_selecionada]
+    df_filtrado = database_criptomoedas.copy()[
+        database_criptomoedas['Criptomoedas'] == criptomoeda_selecionada]
     fig = go.Figure()
 
-    for criptomoeda, grupo in df_filtrado.groupby('criptomoeda'):
+    for criptomoeda, grupo in df_filtrado.groupby('Criptomoedas'):
         fig.add_trace(go.Bar(
-            x=grupo['mes'],
-            y=grupo['valor'],
+            x=grupo['Data'],
+            y=grupo['value'],
             name=criptomoeda
         ))
 
